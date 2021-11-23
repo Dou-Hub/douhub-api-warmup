@@ -1,0 +1,49 @@
+service: ${self:custom.clientName}-${self:custom.region}-${self:custom.stage}-${self:custom.apiName}
+
+plugins:
+  - serverless-bundle
+  - serverless-domain-manager
+
+custom: ${file(../serverless.common.yml):custom}
+package: ${file(../serverless.common.yml):package}
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  memorySize: 512 #MB
+  timeout: 120 #Seconds
+  deploymentBucket: ${self:custom.clientName}-${self:custom.region}-${self:custom.stage}-serverless
+  role: arn:aws:iam::${self:custom.accountId}:role/${self:custom.roleName}
+  environment: ${file(../serverless.common.yml):environment}
+  apiGateway: # Optional API Gateway global config
+    minimumCompressionSize: 512 # Compress response when larger than specified size in bytes (must be between 0 and 10485760)
+
+functions:
+  home:
+    handler: index.home
+    name: ${self:service}-home
+    events:
+      - http:
+          path: home
+          method: get
+          cors: ${file(../serverless.common.yml):cors}
+          integration: lambda
+      - schedule:
+          name: ${self:service}-home
+          rate: rate(1 minute)
+          enabled: true
+  search:
+    handler: index.search
+    name: ${self:service}-search
+    events:
+      - http:
+          path: search
+          method: get
+          cors: ${file(../serverless.common.yml):cors}
+          integration: lambda
+      - schedule:
+          name: ${self:service}-search
+          rate: rate(1 minute)
+          enabled: true
+    # layers:
+    #   - arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:layer:chrome-aws-lambda-${self:custom.stage}:1
