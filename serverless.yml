@@ -12,6 +12,7 @@ provider:
   runtime: nodejs14.x
   memorySize: 512 #MB
   timeout: 120 #Seconds
+  region: ${self:custom.region}
   deploymentBucket: ${self:custom.clientName}-${self:custom.region}-${self:custom.stage}-serverless
   role: arn:aws:iam::${self:custom.accountId}:role/${self:custom.roleName}
   environment: ${file(../serverless.common.yml):environment}

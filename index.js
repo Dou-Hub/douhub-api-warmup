@@ -19,7 +19,7 @@ import { getWebPage } from '../../util/web';
 import { HTTPERROR_500 } from '../../../shared/util/constants';
 
 export const home = async (event) => {
-    const caller = await _.checkCaller(event, { ignoreAuth: true, skipUserProfile: true });
+    const caller = await _.checkCaller(event, { ignoreAuthentication: true, skipUserProfile: true });
     if (caller.error) return caller.error;
     const url = `https://www.bandup.io/home`;
     try {
@@ -36,7 +36,7 @@ export const home = async (event) => {
 
 export const search = async (event) => {
 
-    const caller = await _.checkCaller(event, { ignoreAuth: true, skipUserProfile: true });
+    const caller = await _.checkCaller(event, { ignoreAuthentication: true, skipUserProfile: true });
     if (caller.error) return caller.error;
 
     const q = _.getPropValueOfEvent(event, 'q', 'warmup');
